@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="jquery.min.js"></script>
+    <script src="../LSlider.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div id="slider">
+            <img src="1.png" alt=""/>
+            <img src="2.png" alt=""/>
+            <img src="3.png" alt=""/>
+            <img src="4.png" alt=""/>
+        </div>
+    </div>
+    <div style="margin-top: 30px;overflow: hidden;">
+        <span class="p"></span>
+        <span class="b"></span>
+        <span class="b"></span>
+        <span class="b"></span>
+        <span class="b"></span>
+        <span class="n"></span>
+    </div>
+    <script>
+        $.LSlider({
+            initIndex: 0,
+            total: 4,
+
+            onInitialize: function () {},
+            onSwitch: function () {
+                var context = this;
+                $("#slider").stop(false, false).animate({
+                    'marginLeft': (-this.currentIndex * 100) + "px"
+                }, function () {
+                    context.finish();
+                });
+            },
+            onBeforeSwitch: function () {},
+            onAfterSwitch: function () {},
+
+            nextButton: $('.n'),
+            prevButton: $('.p'),
+            indicators: $('.b'),
+
+            allowTrigger: true,
+            interval: 5000
+        });
+    </script>
+    <style>
+        .b {
+            float: left;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: black;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .p, .n {
+            float: left;
+            width: 30px;
+            height: 20px;
+            background: red;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .container {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+        }
+        #slider {
+            display: block;
+            width: 9999px;
+            height: 100px;
+        }
+        img {
+            width: 100px;
+            height: 100px;
+            float: left;
+        }
+    </style>
+</body>
+</html>
