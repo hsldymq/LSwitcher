@@ -27,8 +27,6 @@
         $.LSlider({
             initIndex: 0,
             total: 4,
-
-            onInitialize: function () {},
             onSwitch: function () {
                 var context = this;
                 $("#slider").stop(false, false).animate({
@@ -37,14 +35,14 @@
                     context.finish();
                 });
             },
-            onBeforeSwitch: function () {},
-            onAfterSwitch: function () {},
-
             nextButton: $('.n'),
             prevButton: $('.p'),
             indicators: $('.b'),
+            scrollOn: $('.container'),
+            scrollDown: true,
+            scrollUp: true,
 
-            allowTrigger: true,
+            allowTrigger: false,
             interval: 5000
         });
     </script>
