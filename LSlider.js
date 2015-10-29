@@ -111,7 +111,7 @@
                     function () {};
                 var onEvent =
                     domScrollOn.attachEvent ? 'onmousewheel' :
-                    domScrollOn.addEventListener ? (document.mozHidden !== 'undefined' ? 'DOMMouseScroll' : 'mousewheel') :
+                    domScrollOn.addEventListener ? (document.mozHidden !== undefined ? 'DOMMouseScroll' : 'mousewheel') :
                     null;
 
                 attacher(onEvent, function (event) {
