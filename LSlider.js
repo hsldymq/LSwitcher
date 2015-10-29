@@ -12,7 +12,7 @@
             nextButton: void 0,         // "下一个"按钮,DOM对象或者jQuery对象
             prevButton: void 0,         // "上一个"按钮,DOM对象或者jQuery对象
             indicators: void 0,         // 索引按钮,DOM对象(数组)或者jQuery对象
-            scrollOn: void 0,           // 定义鼠标滚轮事件的容器
+            scrollOn: void 0,           // 定义鼠标滚轮事件的容器DOM对象或jQuery对象
 
             scrollUp: false,            // 是否激活鼠标滚轮向上(上一张)事件
             scrollDown: false,          // 是否激活鼠标滚轮向下(下一张)事件
@@ -106,12 +106,12 @@
                 var domScrollOn = scrollOn[0];      // 只允许注册事件在一个容器上
 
                 var attacher =
-                    window.addEventListener ? domScrollOn.addEventListener :
-                    window.attachEvent ? domScrollOn.attachEvent :
+                    domScrollOn.addEventListener ? domScrollOn.addEventListener :
+                    domScrollOn.attachEvent ? domScrollOn.attachEvent :
                     function () {};
                 var onEvent =
-                    window.attachEvent ? 'onmousewheel' :
-                    window.addEventListener ? (document.mozHidden !== 'undefined' ? 'DOMMouseScroll' : 'mousewheel') :
+                    domScrollOn.attachEvent ? 'onmousewheel' :
+                    domScrollOn.addEventListener ? (document.mozHidden !== 'undefined' ? 'DOMMouseScroll' : 'mousewheel') :
                     null;
 
                 attacher(onEvent, function (event) {
