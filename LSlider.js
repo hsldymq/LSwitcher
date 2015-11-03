@@ -21,18 +21,16 @@
             interval: false             // 定时器切换间隔时间(单位ms), 默认(false)关闭自动切换
         };
 
-        var options = jQuery.extend(defaultOptions, options);
-        var context = {};
-        var initializer = loadOptions.call(context, options);
-        initializer.call(context);
+        var extOptions = jQuery.extend(defaultOptions, options);
+        var initializer = loadOptions(extOptions);
+        initializer();
 
         // 返回jQuery本身
         return this;
     }
 
     function loadOptions(options, undefined) {
-        var context = this;
-        var sliderInfo = {
+        var sliderContext = {
             currentIndex: options.initIndex,    // 当前切换到的幻灯下标
             prevIndex: options.initIndex,       // 上一幅幻灯下标
             total: options.total,               // 幻灯总数
@@ -49,16 +47,15 @@
                     afterSwitch();
                     beginTimerSwitch();
                 }
-            }).call(context)
+            })()
         };
-
 
         // 在切换过程中是否允许触发切换幻灯
         var allowTrigger = options.allowTrigger;
         // 是否开启自动切换
         var intervalOn = typeof options.interval === 'number';
         // 自动切换幻灯间隔时间,非number类型代表不允许自动切换
-        var interval = intervalOn ? parseInt(options.interval) : 0;
+        var interval = intervalOn ? parseInt(options.interval, 10) : 0;
         // "下一个"按钮
         var nextButton = jQuery(options.nextButton);
         // "上一个"按钮
@@ -77,16 +74,16 @@
         // 执行用户初始化程序
         var initialize = function () {
             if (isCallback(options.onInitialize)) {
-                options.onInitialize.call(sliderInfo);
+                options.onInitialize.call(sliderContext);
             }
 
             // 注册"索引"点击事件
             indicators.on('click', function () {
                 if ( ! switching || allowTrigger) {
                     var index = indicators.index(this);
-                    sliderInfo.prevIndex = sliderInfo.currentIndex;
-                    sliderInfo.currentIndex = index;
-                    sliderInfo.triggeredBy = 'indicator';
+                    sliderContext.prevIndex = sliderContext.currentIndex;
+                    sliderContext.currentIndex = index;
+                    sliderContext.triggeredBy = 'indicator';
                     doSwitch();
                 }
             });
@@ -105,21 +102,24 @@
             if (scrollOn.length > 0 && (scrollUp || scrollDown)) {
                 var domScrollOn = scrollOn[0];      // 只允许注册事件在一个容器上
 
-                var attacher =
-                    domScrollOn.addEventListener ? domScrollOn.addEventListener :
-                    domScrollOn.attachEvent ? domScrollOn.attachEvent :
-                    function () {};
                 var onEvent =
                     domScrollOn.attachEvent ? 'onmousewheel' :
                     domScrollOn.addEventListener ? (document.mozHidden !== undefined ? 'DOMMouseScroll' : 'mousewheel') :
                     null;
 
-                attacher(onEvent, function (event) {
+                if (domScrollOn.addEventListener) {
+                    domScrollOn.addEventListener(onEvent, scrollCallback);
+                } else if (domScrollOn.attachEvent) {
+                    domScrollOn.attachEvent(onEvent, scrollCallback);
+                }
+
+                function scrollCallback (event) {
                     event = event || window.event;
+
                     var delta =
                         event.wheelDelta ? event.wheelDelta / 120 :
-                        event.detail ? -event.detail / 3 :
-                        void 0;
+                            event.detail ? -event.detail / 3 :
+                                void 0;
                     var isScrollingDown = delta === -1;
                     var isScrollingUp = delta === 1;
 
@@ -128,7 +128,7 @@
                     } else if (scrollDown && isScrollingDown) {
                         next('scroll');
                     }
-                });
+                }
             }
 
             // 开始定时切换(仅在允许定时切换的情况下才会有效果)
@@ -138,14 +138,14 @@
         // 开始切换前用户程序
         var beforeSwitch = function () {
             if (isCallback(options.onBeforeSwitch)) {
-                options.onBeforeSwitch.call(sliderInfo);
+                options.onBeforeSwitch.call(sliderContext);
             }
         };
 
         // 完成切换后用户程序,指用户在完成切换并调用finish方法之后执行
         var afterSwitch = function () {
             if (isCallback(options.onAfterSwitch)) {
-                options.onAfterSwitch.call(sliderInfo);
+                options.onAfterSwitch.call(sliderContext);
             }
         };
 
@@ -156,7 +156,7 @@
                 switching = true;
                 clearInterval(timer);
                 timer = null;
-                options.onSwitch.call(sliderInfo);
+                options.onSwitch.call(sliderContext);
             }
         };
 
@@ -171,20 +171,20 @@
 
         function next(which) {
             if ( ! switching || allowTrigger) {
-                sliderInfo.prevIndex = sliderInfo.currentIndex;
-                sliderInfo.currentIndex =
-                    (sliderInfo.currentIndex < sliderInfo.total - 1) ? sliderInfo.currentIndex + 1 : 0;
-                sliderInfo.triggeredBy = which;
+                sliderContext.prevIndex = sliderContext.currentIndex;
+                sliderContext.currentIndex =
+                    (sliderContext.currentIndex < sliderContext.total - 1) ? sliderContext.currentIndex + 1 : 0;
+                sliderContext.triggeredBy = which;
                 doSwitch();
             }
         }
 
         function prev(which) {
             if ( ! switching || allowTrigger) {
-                sliderInfo.prevIndex = sliderInfo.currentIndex;
-                sliderInfo.currentIndex =
-                    (sliderInfo.currentIndex === 0) ? sliderInfo.total - 1 : sliderInfo.currentIndex - 1;
-                sliderInfo.triggeredBy = which;
+                sliderContext.prevIndex = sliderContext.currentIndex;
+                sliderContext.currentIndex =
+                    (sliderContext.currentIndex === 0) ? sliderContext.total - 1 : sliderContext.currentIndex - 1;
+                sliderContext.triggeredBy = which;
                 doSwitch();
             }
         }
