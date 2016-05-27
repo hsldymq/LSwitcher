@@ -1,5 +1,7 @@
-;(function (jQuery) {
-    function LSlider(options) {
+;(function (global, jQuery) {
+    'use strict';
+
+    var slider = function (options) {
         var defaultOptions = {
             initIndex: 0,               // 初始的幻灯索引号
             total: 0,                   // 幻灯总数
@@ -27,7 +29,9 @@
 
         // 返回jQuery本身
         return this;
-    }
+    };
+
+    global.LSlider = slider;
 
     function loadOptions(options, undefined) {
         var sliderContext = {
@@ -197,4 +201,4 @@
     }
 
     jQuery.LSlider = LSlider;
-})(jQuery);
+})(this, jQuery);
