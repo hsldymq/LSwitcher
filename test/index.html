@@ -24,28 +24,29 @@
         <span class="n"></span>
     </div>
     <script>
-        $.LSlider({
+        var switcher = LSwitcher({
             initIndex: 0,
             total: 4,
             onSwitch: function () {
                 var context = this;
                 $("#slider").stop(false, false).animate({
-                    'marginLeft': (-this.currentIndex * 100) + "px"
+                    'marginLeft': (-context.currentIndex * 100) + "px"
                 }, function () {
                     context.finish();
                 });
             },
             nextButton: $('.n'),
-            prevButton: $('.p'),
+            previousButton: $('.p'),
             indicators: $('.b'),
             scrollOn: $('.container'),
-            scrollDown: true,
-            scrollUp: true,
 
-            allowTrigger: false,
+            allowContinuedTrigger: false,
             interval: 5000
         });
     </script>
+    <br>
+    <button onclick="switcher.start()">开始</button>
+    <button onclick="switcher.stop()">停止</button>
     <style>
         .b {
             float: left;
