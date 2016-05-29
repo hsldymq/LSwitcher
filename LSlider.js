@@ -32,24 +32,12 @@
     function initSwitcher(options) {
         var switcher = {};
 
-        var switchingContext = {
-            total: options.total,
-            previousIndex: 0,
-            currentIndex: options.initIndex,
-            triggeredBy: ''         // 'nextButton': "上一个"
-                                    // 'previousButton': "下一个"按钮
-                                    // 'scrollUp': 鼠标滚轮向上
-                                    // 'scrollDown': 鼠标滚轮向下
-                                    // 'indicator': 索引按钮
-                                    // 'timer': 定时器
-        };
-
         // 切换的总数
-        var total = options.total;
+        var total = options.total || 0;
         // 切换前的当前下标志
         var previousIndex = 0;
         // 切换到的当前下标值
-        var currentIndex = options.initIndex;
+        var currentIndex = options.initIndex || 0;
         // 由什么触发切换
         // 'nextButton' | 'previousButton' | 'scrollUp' | 'scrollDown' | 'indicator' | 'timer'
         var triggeredBy = '';
@@ -233,6 +221,13 @@
 
             return this;
         };
+        switcher.setTotal = function (newTotal) {
+            total = newTotal;
+        }
+        switcher.setCurrentIndex = function (newCurrentIndex) {
+            previousIndex = currentIndex;
+            currentIndex = newCurrentIndex;
+        }
 
         /**
          * 完成幻灯切换的回调.
