@@ -87,7 +87,7 @@
                 triggeredBy = 'indicator';
                 doSwitch();
             }
-        };
+        }
 
         function onPreviousButtonClickCallback() {
             prev('previousButton');
